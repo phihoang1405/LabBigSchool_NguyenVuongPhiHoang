@@ -1,20 +1,20 @@
-﻿@model IEnumerable<LabBigSchool.Models.Course>
+﻿@model LabBigSchool.ViewModel.CourseViewModel
 @{
     ViewBag.Title = "Home Page";
 }
 
 <div class="row">
     @*<ul>
-        @foreach(var course in Model)
-        {
-            <li>
-                @course.dateTime - @course.Lecturer.Name
-            </li>
-        }
-    </ul>
+            @foreach(var course in Model)
+            {
+                <li>
+                    @course.dateTime - @course.Lecturer.Name
+                </li>
+            }
+        </ul>
     *@
     <ul class="course">
-        @foreach (var course in Model)
+        @foreach (var course in Model.UpcommingCourses)
         {
             <li>
                 <div class="date">
@@ -28,42 +28,143 @@
                 <div class="details">
                     <span class="lecturer">
                         @course.Lecturer.Name
+                        @if (Model.ShowAction)
+                        {
+                            <button class="btn btn-default btn-sm js-toggle-follow" data-user-id="@course.LecturerId">Follow</button>
+                        }
                     </span>
                     <span class="category">
                         @course.category.Name
                     </span>
+                    @if (Model.ShowAction)
+                    {
+                        <button data-course-id="@course.Id" class="btn btn-default btn-sm js-toggle-attendance">Going?</button>
+                    }
                 </div>
 
             </li>
         }
     </ul>
+
 </div>
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $(".js-toggle-attendance").click(function (e) {
+                var button = $(e.target);
+                $.post("/api/attendances", { courseId: button.attr("data-course-id") })
+                    .done(function () {
+                        button
+                            .removeClass("btn-default")
+                            .addClass("btn-info")
+                            .text("Going");
+                    })
+                    .fail(function () {
+                        alert("Something failed!");
+                    });
+            });
+
+            $(".js-toggle-follow").click(function (e) {
+                var button = $(e.target);
+                $.post("/api/followings", { followeeId: button.attr("data-course-id") })
+                    .done(function () {
+                        button.text("Following");
+                    })
+                    .fail(function () {
+                        alert("Something failed!");
+                    });
+            });
+        });
+    </script>
+}
+<style>
+    .navbar-inverse .navbar-brand {
+        color: yellow;
+    }
+
+        .navbar-inverse .navbar-brand::before {
+            transform: scaleX(0);
+            transform-origin: bottom right;
+        }
+
+        .navbar-inverse .navbar-brand:hover::before {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        .navbar-inverse .navbar-brand::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            inset: 0 0 0 0;
+            background: hsl(200 100% 80%);
+            z-index: -1;
+            transition: transform .3s ease;
+        }
+
+    .navbar-inverse .navbar-brand {
+        position: relative;
+        font-size: 20px;
+        margin-left: -60px
+    }
+
+    html {
+        block-size: 100%;
+        inline-size: 100%;
+    }
+
+    body {
+        min-block-size: 100%;
+        min-inline-size: 100%;
+        margin: 0;
+        box-sizing: border-box;
+        display: grid;
+        place-content: center;
+        font-family: system-ui, sans-serif;
+    }
+
+
+    body {
+        grid-auto-flow: column;
+    }
+
+    .row {
+        margin-right: -49px;
+        margin-left: -15px;
+        margin-top: -153px;
+    }
+</style>
 
 @*<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+        <h1>ASP.NET</h1>
+        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+        <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Getting started</h2>
+            <p>
+                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
+                enables a clean separation of concerns and gives you full control over markup
+                for enjoyable, agile development.
+            </p>
+            <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Get more libraries</h2>
+            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
+            <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Web Hosting</h2>
+            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+            <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
 *@

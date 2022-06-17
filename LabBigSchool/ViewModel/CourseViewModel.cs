@@ -28,5 +28,7 @@ namespace LabBigSchool.ViewModel
         {
             return DateTime.ParseExact(string.Format("{0} {1}", Date, Time), string.Format("{0} {1}", a, b), CultureInfo.CurrentCulture);
         }
+        public IEnumerable<Course> UpcommingCourses { get; set; }
+        public bool ShowAction { get; set; }
     }
 }
