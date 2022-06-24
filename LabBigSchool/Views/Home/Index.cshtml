@@ -32,6 +32,7 @@
                         {
                             <button class="btn btn-default btn-sm js-toggle-follow" data-user-id="@course.LecturerId">Follow</button>
                         }
+                        
                     </span>
                     <span class="category">
                         @course.category.Name
@@ -40,6 +41,7 @@
                     {
                         <button data-course-id="@course.Id" class="btn btn-default btn-sm js-toggle-attendance">Going?</button>
                     }
+                    
                 </div>
 
             </li>
@@ -136,7 +138,11 @@
     .row {
         margin-right: -49px;
         margin-left: -15px;
-        margin-top: -153px;
+        margin-top: -99px;
+    }
+    .course > li {
+        position: relative;
+        margin-bottom: 39px;
     }
 </style>
 
